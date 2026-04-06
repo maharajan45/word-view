@@ -1,0 +1,184 @@
+<!-- ─────────────────────────────────────────────────────
+     TRIGGER BUTTON
+───────────────────────────────────────────────────────── -->
+<!-- Replace the trigger button with: -->
+<div style="display: flex; justify-content: center;">
+  <p-button
+    label="View Document"
+    icon="pi pi-file"
+    severity="secondary"
+    (onClick)="openDialog()">
+  </p-button>
+</div>
+
+<!-- ─────────────────────────────────────────────────────
+     DIALOG
+───────────────────────────────────────────────────────── -->
+<p-dialog
+  [(visible)]="dialogVisible"
+  [header]="dialogHeader"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="true"
+  styleClass="doc-review-dialog"
+  [style]="dialogStyle"
+  (onHide)="closeDialog()">
+
+  <!-- ── main layout: doc left | comments right ── -->
+  <div class="doc-review-layout" [class.mobile]="isMobile">
+
+    <!-- ════════════════════════════════════════
+         LEFT — document panel (iframe)
+    ════════════════════════════════════════ -->
+    <div class="doc-panel">
+
+      <!-- spinner shown until iframe fires load -->
+      <div *ngIf="iframeLoading" class="doc-loading">
+        <p-progressspinner strokeWidth="3" styleClass="w-8 h-8" />
+        <span>Loading document…</span>
+      </div>
+
+      <!-- error fallback -->
+      <div *ngIf="iframeError && !iframeLoading" class="doc-empty">
+        <i class="pi pi-exclamation-triangle"
+          style="font-size:2rem; color:#e74c3c"></i>
+        <span>Could not load the document.<br>
+          <a [href]="docUrl" target="_blank" rel="noopener">Open in new tab
+            ↗</a>
+        </span>
+      </div>
+
+      <!-- Word avatar tooltip -->
+      <div *ngIf="tooltip.visible"
+        class="word-tooltip"
+        [style.top.px]="tooltip.y"
+        [style.left.px]="tooltip.x">
+        <span
+          class="tooltip-av"
+          [style.background]="tooltip.bg"
+          [style.color]="tooltip.fg">
+          {{ tooltip.initials }}
+        </span>
+        <!-- <div class="tooltip-info">
+          <span class="tooltip-author">{{ tooltip.author }}</span>
+          <span class="tooltip-preview">{{ tooltip.text | slice:0:40 }}…</span>
+        </div> -->
+        <span class="tooltip-arrow"></span>
+      </div>
+
+      <iframe
+        #docIframe
+        [src]="safeDocUrl"
+        class="doc-iframe"
+        [class.hidden]="iframeLoading || iframeError"
+        frameborder="0"
+        sandbox="allow-same-origin allow-scripts"
+        (load)="onIframeLoad()"
+        (error)="onIframeError()"
+        title="Document Preview">
+      </iframe>
+
+    </div>
+
+    <!-- ════════════════════════════════════════
+         RIGHT — comment panel
+         On mobile: slides up as bottom drawer
+    ════════════════════════════════════════ -->
+    <div
+      class="comment-panel"
+      [class.drawer-open]="drawerOpen"
+      [class.mobile-panel]="isMobile">
+
+      <!-- Mobile drawer handle -->
+      <div *ngIf="isMobile" class="drawer-handle" (click)="toggleDrawer()">
+        <div class="drawer-handle-bar"></div>
+        <span class="drawer-handle-label">
+          <span class="tab-badge" style="margin-right:6px">{{ totalComments
+            }}</span>
+          Comments
+          <i class="pi" [class.pi-chevron-up]="!drawerOpen"
+            [class.pi-chevron-down]="drawerOpen"
+            style="margin-left:6px; font-size:0.8rem;"></i>
+        </span>
+      </div>
+
+      <!-- tabs (desktop only, mobile shows all in drawer) -->
+      <div class="cmt-tabs">
+        <button
+          class="cmt-tab"
+          [class.active]="activeTab === 'comments'"
+          (click)="switchTab('comments')">
+          Comments
+          <span class="tab-badge">{{ totalComments }}</span>
+        </button>
+        <button
+          class="cmt-tab"
+          [class.active]="activeTab === 'logs'"
+          (click)="switchTab('logs')">
+          Logs
+        </button>
+      </div>
+
+      <!-- ── COMMENTS TAB ── -->
+      <ng-container *ngIf="activeTab === 'comments'">
+        <div class="cmt-list" #commentList>
+          <div
+            class="cmt-card"
+            [ngClass]="'status-' + c.status"
+            [class.selected]="selectedComment?.id === c.id"
+            [attr.data-comment-id]="c.id"
+            *ngFor="let c of comments"
+            (click)="selectComment(c)">
+
+            <div class="cmt-header">
+              <span class="cmt-av" [style.background]="c.bg"
+                [style.color]="c.fg">
+                {{ c.initials }}
+              </span>
+              <span class="cmt-author">{{ c.author }}</span>
+              <p-tag
+                [value]="c.status | titlecase"
+                [severity]="getSeverity(c.status)"
+                styleClass="cmt-status-tag">
+              </p-tag>
+            </div>
+
+            <div class="cmt-meta">
+              <span class="cmt-time">{{ c.time }}</span>
+            </div>
+
+            <div class="cmt-text">{{ c.text }}</div>
+
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- ── LOGS TAB ── -->
+      <ng-container *ngIf="activeTab === 'logs'">
+        <div class="cmt-list">
+          <div class="log-row" *ngFor="let c of comments.slice().reverse()">
+            <span class="log-av" [style.background]="c.bg" [style.color]="c.fg">
+              {{ c.initials }}
+            </span>
+            <div class="log-body">
+              <b>{{ c.author }}</b> commented on
+              <div class="log-preview">{{ c.text | slice:0:60 }}…</div>
+              <div class="log-time">{{ c.time }}</div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+    </div>
+
+    <!-- Mobile overlay backdrop when drawer is open -->
+    <div
+      *ngIf="isMobile && drawerOpen"
+      class="drawer-backdrop"
+      (click)="toggleDrawer()">
+    </div>
+
+  </div>
+
+</p-dialog>
