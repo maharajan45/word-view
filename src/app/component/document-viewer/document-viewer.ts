@@ -132,7 +132,7 @@ export class DocumentViewerComponent implements OnInit, OnChanges, OnDestroy {
     {
       id: 'c5', lineId: 'p31__w3',         // "decide" — paragraph 31, word 3
       author: 'Zainab Khan', initials: 'ZH', bg: '#534AB7', fg: '#EEEDFE',
-      status: 'pending', time: '1 hr ago',
+      status: 'approved', time: '1 hr ago',
       text: '"decide" — this word is ambiguous for non-English speakers.',
     },
     {
@@ -144,7 +144,7 @@ export class DocumentViewerComponent implements OnInit, OnChanges, OnDestroy {
     {
       id: 'c7', lineId: 'p88__w1',         // "hair removal" — paragraph 88, word 1
       author: 'Samuel Castro', initials: 'SC', bg: '#1D9E75', fg: '#fff',
-      status: 'pending', time: '4 hrs ago',
+      status: 'approved', time: '4 hrs ago',
       text: '"hair removal" — add "permanent" to clarify intent.',
     },
     {

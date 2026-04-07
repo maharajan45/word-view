@@ -271,8 +271,8 @@
   transition: color .15s, border-color .15s;
 
   &.active {
-    color: #4f46e5;
-    border-bottom-color: #4f46e5;
+    color: #000;
+    border-bottom-color: #000;
   }
 
   &:hover:not(.active) {
@@ -282,7 +282,7 @@
 
 .tab-badge {
   background: #e0e7ff;
-  color: #4338ca;
+  color: #000;
   font-size: 0.72rem;
   font-weight: 700;
   padding: 1px 6px;
@@ -301,9 +301,7 @@
 
 // ─── Comment card ─────────────────────────────────────────
 .cmt-card {
-    &.status-approved { background: rgba(29, 158, 117, 0.08); }
-  &.status-rejected { background: rgba(231, 76, 60, 0.08); }
-  &.status-pending  { background: rgba(245, 158, 11, 0.08); }
+
 
   border: 1px solid #e5e7eb;
   border-radius: 8px;
@@ -323,23 +321,19 @@
   }
 }
 
+// ─── Comment card header ──────────────────────────────────
 .cmt-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 4px;
-}
+  margin-bottom: 6px;
 
-.cmt-av {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.72rem;
-  font-weight: 700;
-  flex-shrink: 0;
+  .cmt-time {
+    font-size: 0.73rem;
+    color: #9ca3af;
+    margin-left: 0;
+    margin-right: 16%;
+  }
 }
 
 .cmt-author {
@@ -350,6 +344,37 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+// ─── Status badge colors ──────────────────────────────────
+.cmt-status-tag.p-tag-danger {
+  background: #FDECEA;
+  color: #B91C1C;
+}
+
+// Change approved → purple to match reference
+.cmt-status-tag.p-tag-success {
+  background: #EDE9FE;
+  color: #6D28D9;
+}
+
+::ng-deep .cmt-status-tag {
+  font-size: 0.70rem !important;
+  padding: 2px 10px !important;
+  border-radius: 20px !important;
+  font-weight: 600 !important;
+}
+
+// ─── Comment text (no extra left indent) ─────────────────
+.cmt-text {
+  font-size: 0.82rem;
+  color: #000;
+  line-height: 1.5;
+  margin-left: 18%;
+}
+
+.cmt-meta {
+  display: none; // hide empty meta row
 }
 
 ::ng-deep .cmt-status-tag {
@@ -364,26 +389,6 @@
   margin-bottom: 6px;
 }
 
-.cmt-time {
-  font-size: 0.73rem;
-  color: #9ca3af;
-}
-
-.cmt-lid {
-  font-size: 0.68rem;
-  color: #9ca3af;
-  font-family: monospace;
-  background: #f3f4f6;
-  padding: 1px 5px;
-  border-radius: 4px;
-}
-
-.cmt-text {
-  font-size: 0.82rem;
-  color: #374151;
-  line-height: 1.45;
-}
-
 // ─── Logs ────────────────────────────────────────────────
 .log-row {
   display: flex;
@@ -394,14 +399,28 @@
   &:last-child { border-bottom: none; }
 }
 
-.log-av {
-  width: 30px;
-  height: 30px;
+.cmt-av  {
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.72rem;
+  font-size: 1rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+
+.log-av  {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
   font-weight: 700;
   flex-shrink: 0;
   align-self: flex-start;

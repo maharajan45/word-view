@@ -109,8 +109,7 @@
           class="cmt-tab"
           [class.active]="activeTab === 'comments'"
           (click)="switchTab('comments')">
-          Comments
-          <span class="tab-badge">{{ totalComments }}</span>
+          Comments <span>({{ totalComments }})</span>
         </button>
         <button
           class="cmt-tab"
@@ -123,8 +122,7 @@
       <!-- ── COMMENTS TAB ── -->
       <ng-container *ngIf="activeTab === 'comments'">
         <div class="cmt-list" #commentList>
-          <div
-            class="cmt-card"
+          <div class="cmt-card"
             [ngClass]="'status-' + c.status"
             [class.selected]="selectedComment?.id === c.id"
             [attr.data-comment-id]="c.id"
@@ -137,6 +135,7 @@
                 {{ c.initials }}
               </span>
               <span class="cmt-author">{{ c.author }}</span>
+              <span class="cmt-time">· {{ c.time }}</span>
               <p-tag
                 [value]="c.status | titlecase"
                 [severity]="getSeverity(c.status)"
@@ -144,9 +143,7 @@
               </p-tag>
             </div>
 
-            <div class="cmt-meta">
-              <span class="cmt-time">{{ c.time }}</span>
-            </div>
+            <!-- No .cmt-meta div needed -->
 
             <div class="cmt-text">{{ c.text }}</div>
 
@@ -155,7 +152,8 @@
       </ng-container>
 
       <!-- ── LOGS TAB ── -->
-      <ng-container *ngIf="activeTab === 'logs'">
+      @if(activeTab === 'logs') {
+      <ng-container>
         <div class="cmt-list">
           <div class="log-row" *ngFor="let c of comments.slice().reverse()">
             <span class="log-av" [style.background]="c.bg" [style.color]="c.fg">
@@ -169,15 +167,17 @@
           </div>
         </div>
       </ng-container>
+      }
 
     </div>
 
     <!-- Mobile overlay backdrop when drawer is open -->
+    @if(isMobile && drawerOpen) {
     <div
-      *ngIf="isMobile && drawerOpen"
       class="drawer-backdrop"
       (click)="toggleDrawer()">
     </div>
+    }
 
   </div>
 
